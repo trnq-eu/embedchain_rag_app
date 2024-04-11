@@ -2,7 +2,20 @@ llm:
   provider: openai
   config:
     model: 'gpt-3.5-turbo'
-    temperature: 0.5
-    max_tokens: 1000
+    temperature: 0.2
+    max_tokens: 2000
     top_p: 1
     stream: false
+    prompt: |
+      Use the following pieces of context to answer the query at the end.
+      If you don't know the answer, just say that you don't know, don't try to make up an answer.
+
+      $context
+
+      Query: $query
+
+      Helpful Answer:
+    system_prompt: |
+      Act as a professional archivist. The user is going to ask you question related to the documentation included in the historical archive
+      of the Compagnia di San Paolo. Your answers must be based on the sources provided. You will always consult your sources before giving an answer
+      and you will mention your sources in the answer.

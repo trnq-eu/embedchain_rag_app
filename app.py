@@ -1,23 +1,30 @@
 import os
 import gradio as gr
-
+from dotenv import load_dotenv
 from embedchain import App
+import openai
 
-def process_input(openai_key, uploaded_file):
-    os.environ["OPENAI_API_KEY"] = openai_key
+load_dotenv()
+
+prompt = gr.Textbox()
+openai_key = os.getenv("OPEN_AI_KEY")
+os.environ["OPENAI_API_KEY"] = openai_key
+
+
+
+def process_input(prompt):
     app = App.from_config(config_path="config.yaml")
+    app.add('data/Archivio-Storico-CSP.pdf', data_type='pdf_file')
     # Your processing logic using the OpenAI key and the uploaded file
-    return "Processed result"
-
-openai_key_input = gr.Textbox(label="OpenAI Key", type="password")
-upload_button = gr.UploadButton(label="Upload File")
+    response = app.query(prompt)
+    return response
 
 interface = gr.Interface(
     fn=process_input,
-    inputs=[openai_key_input, upload_button],
+    inputs=[prompt],
     outputs="text",
-    title="OpenAI Key and File Upload",
-    description="Enter your OpenAI key and upload a file to process.",
+    title="Gradio Embedchain RAG App",
+    description="Fammi una domanda sui documenti caricati",
 )
 
 interface.launch()
